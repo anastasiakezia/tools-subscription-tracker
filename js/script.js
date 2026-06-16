@@ -30,7 +30,7 @@ const form = document.getElementById("subscriptionForm");
 const tableBody = document.getElementById("subscriptionTable");
 const searchInput = document.getElementById("searchInput");
 
-renderSubscriptions();
+sortSubscriptions();
 updateDashboard();
 
 /* ========= EVENT LISTENERS ========= */
