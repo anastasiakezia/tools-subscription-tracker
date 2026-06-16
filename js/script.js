@@ -97,7 +97,8 @@ function saveSubscription() {
 
   localStorage.setItem("subscriptions", JSON.stringify(subscriptions));
 
-  renderSubscriptions();
+  sortSubscriptions();
+  searchSubscription();
   updateDashboard();
   clearForm();
 
@@ -175,7 +176,8 @@ function deleteSubscription(id) {
       subscriptions = subscriptions.filter((item) => item.id != id);
       localStorage.setItem("subscriptions", JSON.stringify(subscriptions));
 
-      renderSubscriptions();
+      sortSubscriptions();
+      searchSubscription();
       updateDashboard();
 
       Swal.fire({
@@ -241,7 +243,12 @@ function sortSubscriptions() {
 
 function exportToCSV() {
   if (subscriptions.length === 0) {
-    alert("No data available to export.");
+    Swal.fire({
+      icon: "info",
+      title: "No Data Available",
+      text: "There are no subscription records to export.",
+      confirmButtonColor: "#0d6efd",
+    });
     return;
   }
 
