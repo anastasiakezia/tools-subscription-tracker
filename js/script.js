@@ -30,6 +30,18 @@ const form = document.getElementById("subscriptionForm");
 const tableBody = document.getElementById("subscriptionTable");
 const searchInput = document.getElementById("searchInput");
 
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 1500,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  },
+});
+
 sortSubscriptions();
 updateDashboard();
 
@@ -71,8 +83,16 @@ function saveSubscription() {
     subscriptions = subscriptions.map((item) =>
       item.id == id ? subscription : item,
     );
+    Toast.fire({
+      icon: "success",
+      title: "Subscription updated successfully!",
+    });
   } else {
     subscriptions.push(subscription);
+    Toast.fire({
+      icon: "success",
+      title: "Subscription added successfully!",
+    });
   }
 
   localStorage.setItem("subscriptions", JSON.stringify(subscriptions));
@@ -142,16 +162,31 @@ function editSubscription(id) {
 }
 
 function deleteSubscription(id) {
-  const confirmDelete = confirm(
-    "Are you sure you want to delete this subscription?",
-  );
-  if (!confirmDelete) return;
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this subscription data!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#dc3545",
+    cancelButtonColor: "#6c757d",
+    confirmButtonText: "Yes, delete it!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      subscriptions = subscriptions.filter((item) => item.id != id);
+      localStorage.setItem("subscriptions", JSON.stringify(subscriptions));
 
-  subscriptions = subscriptions.filter((item) => item.id != id);
-  localStorage.setItem("subscriptions", JSON.stringify(subscriptions));
+      renderSubscriptions();
+      updateDashboard();
 
-  renderSubscriptions();
-  updateDashboard();
+      Swal.fire({
+        title: "Deleted!",
+        text: "Subscription has been deleted.",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    }
+  });
 }
 
 /* ========= DASHBOARD FUNCTIONS ========= */
